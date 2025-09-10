@@ -12,7 +12,7 @@ const getUsers = (req, res) => {
     });
 };
 
-// POST / user - create a new user
+// POST /user - create a new user
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
 
@@ -25,7 +25,7 @@ const createUser = (req, res) => {
       }
       return res
         .status(500)
-        .send({ message: "An error occurred on the server " });
+        .send({ message: "An error occurred on the server" });
     });
 };
 
