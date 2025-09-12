@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/users");
 const clothingItemRouter = require("./routes/clothingItem");
+const { STATUS_NOT_FOUND } = require("./utils/constants");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -10,10 +11,10 @@ const { PORT = 3001 } = process.env;
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
-    console.log("Connected to DB");
+    console.log("Connected to DB"); // eslint-disable-line no-console
   })
   .catch((err) => {
-    console.error("Error connecting to DB", err);
+    console.error("Error connecting to DB", err); // eslint-disable-line no-console
   });
 
 // Middleware to parse JSON
@@ -31,11 +32,13 @@ app.use((req, res, next) => {
 app.use("/users", mainRouter);
 app.use("/items", clothingItemRouter);
 
-// 404 handler for undefined routes
+//  handler for undefined routes
 app.use((req, res) => {
-  res.status(404).send({ message: "Requested resource not found" });
+  res
+    .status(STATUS_NOT_FOUND)
+    .send({ message: "Requested resource not found" });
 });
 
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`Listening on port ${PORT}`); // eslint-disable-line no-console
 });
