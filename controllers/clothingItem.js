@@ -16,7 +16,7 @@ const createItem = (req, res) => {
     .create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(STATUS_CREATED).send({ data: item }))
     .catch((err) => {
-      console.error(err); // <-- log the error
+      console.error(err); // eslint-disable-line no-console
       if (err.name === "ValidationError") {
         return res.status(STATUS_BAD_REQUEST).send({
           message: "Invalid input data",
@@ -34,28 +34,38 @@ const getItems = (req, res) => {
     .find({})
     .then((items) => res.status(STATUS_OK).send({ data: items }))
     .catch((err) => {
-      console.error(err); // <-- log the error
+      console.error(err); // eslint-disable-line no-console
       return res
         .status(STATUS_INTERNAL_ERROR)
         .send({ message: "Error fetching items" });
     });
 };
 
-// Delete a clothing item
+// Delete a clothing item (with ownership check)
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
 
   clothingItem
-    .findByIdAndDelete(itemId)
+    .findById(itemId)
     .orFail()
-    .then((deletedItem) =>
-      res.status(STATUS_OK).send({
-        message: "Item successfully deleted",
-        data: deletedItem,
-      })
-    )
+    .then((item) => {
+      // Check ownership
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(403)
+          .send({ message: "You can only delete your own items" });
+      }
+
+      // If owner matches, delete
+      return clothingItem.findByIdAndDelete(itemId).then((deletedItem) =>
+        res.status(STATUS_OK).send({
+          message: "Item successfully deleted",
+          data: deletedItem,
+        })
+      );
+    })
     .catch((err) => {
-      console.error(err); // <-- log the error
+      console.error(err); // eslint-disable-line no-console
       if (err.name === "CastError") {
         return res
           .status(STATUS_BAD_REQUEST)
@@ -85,7 +95,7 @@ const likeItem = (req, res) => {
       res.status(STATUS_OK).send({ message: "Item liked", data: item })
     )
     .catch((err) => {
-      console.error(err); // <-- log the error
+      console.error(err); // eslint-disable-line no-console
       if (err.name === "CastError") {
         return res
           .status(STATUS_BAD_REQUEST)
@@ -115,7 +125,7 @@ const dislikeItem = (req, res) => {
       res.status(STATUS_OK).send({ message: "Item disliked", data: item })
     )
     .catch((err) => {
-      console.error(err); // <-- log the error
+      console.error(err); // eslint-disable-line no-console
       if (err.name === "CastError") {
         return res
           .status(STATUS_BAD_REQUEST)

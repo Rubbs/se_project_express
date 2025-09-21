@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const mainRouter = require("./routes/users");
-const clothingItemRouter = require("./routes/clothingItem");
+const cors = require("cors");
+
+const routes = require("./routes"); // central index.js router
 const { STATUS_NOT_FOUND } = require("./utils/constants");
 
 const app = express();
@@ -17,22 +18,14 @@ mongoose
     console.error("Error connecting to DB", err); // eslint-disable-line no-console
   });
 
-// Middleware to parse JSON
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Temporary authorization middleware
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68bf8fd97598460b846b20d2", // Example user ID
-  };
-  next();
-});
+// Use all routes (index.js will decide which are public/protected)
+app.use(routes);
 
-// Mount router
-app.use("/users", mainRouter);
-app.use("/items", clothingItemRouter);
-
-//  handler for undefined routes
+// Handler for undefined routes
 app.use((req, res) => {
   res
     .status(STATUS_NOT_FOUND)
