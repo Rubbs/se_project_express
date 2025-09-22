@@ -52,7 +52,7 @@ const deleteItem = (req, res) => {
       // Check ownership
       if (item.owner.toString() !== req.user._id) {
         return res
-          .status(403)
+          .status(SATUS_FORBIDDEN)
           .send({ message: "You can only delete your own items" });
       }
 
