@@ -2,6 +2,15 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
+// Named validator functions
+function isURLValidator(value) {
+  return validator.isURL(value);
+}
+
+function isEmailValidator(v) {
+  return validator.isEmail(v);
+}
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -13,18 +22,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "The avatar field is required"],
     validate: {
-      validator(value) {
-        return validator.isURL(value);
-      },
+      validator: isURLValidator,
       message: "You must enter a valid URL",
     },
   },
   email: {
     type: String,
     required: true,
-    unique: true, // Ensure email uniqueness
+    unique: true,
     validate: {
-      validator: (v) => validator.isEmail(v), // check for valid email format
+      validator: isEmailValidator,
       message: "You must enter a valid email",
     },
   },
@@ -34,15 +41,21 @@ const userSchema = new mongoose.Schema({
     select: false, // password won't be sent in queries by default
   },
 });
-userSchema.statics.findUserByCredentials = function (email, password) {
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
   return this.findOne({ email })
-    .select("+password") //get password explicitly
+    .select("+password")
     .then((user) => {
-      if (!user)
+      if (!user) {
         return Promise.reject(new Error("Incorrect email or password"));
+      }
       return bcrypt.compare(password, user.password).then((matched) => {
-        if (!matched)
+        if (!matched) {
           return Promise.reject(new Error("Incorrect email or password"));
+        }
         return user;
       });
     });

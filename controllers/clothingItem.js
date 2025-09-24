@@ -6,6 +6,7 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_INTERNAL_ERROR,
+  STATUS_FORBIDDEN,
 } = require("../utils/constants");
 
 // Create a clothing item
@@ -52,7 +53,7 @@ const deleteItem = (req, res) => {
       // Check ownership
       if (item.owner.toString() !== req.user._id) {
         return res
-          .status(SATUS_FORBIDDEN)
+          .status(STATUS_FORBIDDEN)
           .send({ message: "You can only delete your own items" });
       }
 

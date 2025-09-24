@@ -9,6 +9,8 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_INTERNAL_ERROR,
+  STATUS_CONFLICT,
+  STATUS_UNAUTHORIZED,
 } = require("../utils/constants");
 
 // POST /signup – create a new user
@@ -21,16 +23,15 @@ const createUser = (req, res) => {
       .send({ message: "Email and password are required" });
   }
 
-  bcrypt
+  return bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
       const userObj = user.toObject();
-      delete userObj.password; // never return the hash
-      res.status(STATUS_CREATED).send({ data: userObj });
+      delete userObj.password;
+      return res.status(STATUS_CREATED).send({ data: userObj });
     })
     .catch((err) => {
-      console.error(err);
       if (err.code === 11000) {
         return res
           .status(STATUS_CONFLICT)
@@ -57,15 +58,17 @@ const login = (req, res) => {
       .send({ message: "Email and password are required" });
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ token });
+      return res.send({ token });
     })
     .catch(() =>
-      res.status(401).send({ message: "Incorrect email or password" })
+      res
+        .status(STATUS_UNAUTHORIZED)
+        .send({ message: "Incorrect email or password" })
     );
 };
 
@@ -73,15 +76,14 @@ const login = (req, res) => {
 const getCurrentUser = (req, res) => {
   const userId = req.user && req.user._id;
 
-  User.findById(userId)
+  return User.findById(userId)
     .then((user) => {
       if (!user) {
         return res.status(STATUS_NOT_FOUND).send({ message: "User not found" });
       }
-      res.status(STATUS_OK).send({ data: user });
+      return res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         return res
           .status(STATUS_BAD_REQUEST)
@@ -98,7 +100,7 @@ const updateCurrentUser = (req, res) => {
   const userId = req.user && req.user._id;
   const { name, avatar } = req.body;
 
-  User.findByIdAndUpdate(
+  return User.findByIdAndUpdate(
     userId,
     { name, avatar },
     { new: true, runValidators: true, context: "query" }
@@ -107,10 +109,9 @@ const updateCurrentUser = (req, res) => {
       if (!user) {
         return res.status(STATUS_NOT_FOUND).send({ message: "User not found" });
       }
-      res.status(STATUS_OK).send({ data: user });
+      return res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
         return res
           .status(STATUS_BAD_REQUEST)
