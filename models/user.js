@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // models/user.js
+=======
+>>>>>>> 226b1c7365d848fba859dc09d429a9d7eaa0d632
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
