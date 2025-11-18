@@ -10,7 +10,7 @@ const validateURL = (value, helpers) => {
 };
 
 // Validate New Clothing Item
-const validateAuthBody = celebrate({
+const validateCardBody = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30).messages({
       "string.min": 'The minimum length of the "name" field is 2',
