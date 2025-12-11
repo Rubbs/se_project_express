@@ -1,15 +1,30 @@
+// routes/index.js
+
 const router = require("express").Router();
+
 const clothingItemRouter = require("./clothingItem");
 const userRouter = require("./users");
+
 const { createUser, login } = require("../controllers/users");
+const {
+  validateUserBody,
+  validateAuthBody,
+} = require("../middlewares/validation");
 const auth = require("../middlewares/auth");
 const { getItems } = require("../controllers/clothingItem");
 
-// Public routes
-router.post("/signup", createUser);
-router.post("/signin", login);
+// Crash-test route (REQUIRED for Project 15)
+router.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 
-// Public items route
+// Public auth routes
+router.post("/signup", validateUserBody, createUser);
+router.post("/signin", validateAuthBody, login);
+
+// Public GET /items
 router.get("/items", getItems);
 
 // Protected routes

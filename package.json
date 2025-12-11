@@ -1,7 +1,7 @@
 {
   "name": "se_project_express",
   "version": "0.1.0",
-  "description": "The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.\r ## Running the Project\r `npm run start` — to launch the server",
+  "description": "The back-end project is focused on creating a server for the WTWR application.",
   "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
@@ -20,22 +20,16 @@
   "homepage": "https://github.com/Rubbs/se_project_express#readme",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-<<<<<<< HEAD
     "celebrate": "^15.0.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "express-winston": "^4.2.0",
+    "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
-    "validator": "^13.15.20",
+    "validator": "^13.15.23",
     "winston": "^3.18.3"
-=======
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.0",
-    "validator": "^13.15.15"
->>>>>>> 226b1c7365d848fba859dc09d429a9d7eaa0d632
   },
   "devDependencies": {
     "eslint": "^8.57.1",

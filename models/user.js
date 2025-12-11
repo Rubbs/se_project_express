@@ -1,14 +1,14 @@
-<<<<<<< HEAD
 // models/user.js
-=======
->>>>>>> 226b1c7365d848fba859dc09d429a9d7eaa0d632
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 // Named validator functions
 function isURLValidator(value) {
-  return validator.isURL(value);
+  return validator.isURL(value, {
+    protocols: ["http", "https"],
+    require_protocol: true,
+  });
 }
 
 function isEmailValidator(v) {
@@ -26,7 +26,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "The avatar field is required"],
     validate: {
-      validator: isURLValidator,
+      validator: (value) =>
+        validator.isURL(value, {
+          protocols: ["http", "https"],
+          require_protocol: true,
+        }),
       message: "You must enter a valid URL",
     },
   },

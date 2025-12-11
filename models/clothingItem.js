@@ -11,12 +11,12 @@ const clothingItemSchema = new mongoose.Schema({
       validator(value) {
         return validator.isURL(value);
       },
-      message: "You must enter a valid URL",
+      message: "imageUrl must be a valid URL",
     },
   },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "user", default: [] }],
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("clothingItems", clothingItemSchema);
+module.exports = mongoose.model("ClothingItem", clothingItemSchema);

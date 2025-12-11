@@ -1,5 +1,3 @@
-// errors/index.js
-
 class BadRequestError extends Error {
   constructor(message = "Bad Request") {
     super(message);
