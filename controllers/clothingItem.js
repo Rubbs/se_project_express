@@ -6,7 +6,7 @@ const ForbiddenError = require("../errors/ForbiddenError");
 
 const { STATUS_OK, STATUS_CREATED } = require("../utils/constants");
 
-// CREATE ITEM
+//Create Item
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
 
@@ -17,7 +17,8 @@ const createItem = (req, res, next) => {
     owner: req.user._id,
   })
     .then((item) => {
-      // IMPORTANT: send raw item, not { data: item }
+
+      // Important: send raw item
       res.status(STATUS_CREATED).send(item);
     })
     .catch((err) => {
@@ -28,17 +29,19 @@ const createItem = (req, res, next) => {
     });
 };
 
-// GET ALL ITEMS
+// Get Items
 const getItems = (req, res, next) => {
   ClothingItem.find({})
+
     .then((items) => {
       // IMPORTANT: send raw array
       res.status(STATUS_OK).send(items);
     })
+
     .catch(next);
 };
 
-// DELETE ITEM
+// Delete Item
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
 
@@ -50,6 +53,7 @@ const deleteItem = (req, res, next) => {
           "You do not have permission to delete this item"
         );
       }
+
 
       return ClothingItem.findByIdAndDelete(itemId);
     })
@@ -77,6 +81,7 @@ const likeItem = (req, res, next) => {
       // Send raw item
       res.status(STATUS_OK).send(item);
     })
+
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID format"));
@@ -85,7 +90,7 @@ const likeItem = (req, res, next) => {
     });
 };
 
-// DISLIKE ITEM
+// Dislike Item
 const dislikeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -93,10 +98,12 @@ const dislikeItem = (req, res, next) => {
     { new: true }
   )
     .orFail(() => new NotFoundError("Item not found"))
+
     .then((item) => {
       // Send raw item
       res.status(STATUS_OK).send(item);
     })
+
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID format"));
