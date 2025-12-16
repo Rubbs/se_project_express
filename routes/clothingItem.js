@@ -14,9 +14,6 @@ const {
   validateItemId,
 } = require("../middlewares/validation");
 
-// Get all items
-router.get("/", getItems);
-
 // Create item
 router.post("/", auth, validateCardBody, createItem);
 
@@ -28,4 +25,3 @@ router.put("/:itemId/likes", auth, validateItemId, likeItem);
 router.delete("/:itemId/likes", auth, validateItemId, dislikeItem);
 
 module.exports = router;
-

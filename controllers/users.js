@@ -72,10 +72,8 @@ const getCurrentUser = (req, res, next) => {
   const userId = req.user && req.user._id;
 
   return User.findById(userId)
+    .orFail(new NotFoundError("User not found"))
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError("User not found");
-      }
       return res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
@@ -96,18 +94,12 @@ const updateCurrentUser = (req, res, next) => {
     { name, avatar },
     { new: true, runValidators: true, context: "query" }
   )
+    .orFail(new NotFoundError("User not found"))
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError("User not found");
-      }
       return res.status(STATUS_OK).send({ data: user });
     })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return next(new BadRequestError("Invalid user data"));
-      }
-      return next(err);
-    });
+
+    .catch(next);
 };
 
 module.exports = {
@@ -116,4 +108,3 @@ module.exports = {
   getCurrentUser,
   updateCurrentUser,
 };
-

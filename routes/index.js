@@ -10,7 +10,6 @@ const {
   validateUserBody,
   validateAuthBody,
 } = require("../middlewares/validation");
-const auth = require("../middlewares/auth");
 const { getItems } = require("../controllers/clothingItem");
 
 // Crash-test route (REQUIRED for Project 15)
@@ -28,7 +27,7 @@ router.post("/signin", validateAuthBody, login);
 router.get("/items", getItems);
 
 // Protected routes
-router.use(auth);
+
 router.use("/items", clothingItemRouter);
 router.use("/users", userRouter);
 

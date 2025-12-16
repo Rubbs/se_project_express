@@ -38,4 +38,9 @@ The server also has routes (API endpoints) that let you create, read, update, an
 
 ---
 
-## Project Structure
+## Project Links
+
+- **Deployed frontend application:** https://appwtwr.jumpingcrab.com
+- **Deployed backend API:** https://api.appwtwr.jumpingcrab.com
+- **Frontend GitHub repository:** https://github.com/Rubbs/se_project_react
+- **Project pitch video (Presentation):** https://www.loom.com/share/20f66aac03fa43abb5acd24b9a9de6c3
