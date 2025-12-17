@@ -48,23 +48,19 @@ const login = (req, res, next) => {
     return next(new BadRequestError("Email and password are required"));
   }
 
-  return User.findOne({ email })
-    .select("+password")
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        throw new UnauthorizedError("Invalid email or password");
-      }
-      return bcrypt.compare(password, user.password).then((matched) => {
-        if (!matched) {
-          throw new UnauthorizedError("Invalid email or password");
-        }
-        const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-          expiresIn: "7d",
-        });
-        return res.send({ token });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
       });
+      return res.send({ token });
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err.message === "Incorrect email or password") {
+        return next(new UnauthorizedError("Invalid email or password"));
+      }
+      return next(err);
+    });
 };
 
 // GET /users/me – get current user
@@ -73,9 +69,7 @@ const getCurrentUser = (req, res, next) => {
 
   return User.findById(userId)
     .orFail(new NotFoundError("User not found"))
-    .then((user) => {
-      return res.status(STATUS_OK).send({ data: user });
-    })
+    .then((user) => res.status(STATUS_OK).send({ data: user }))
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid user ID"));
@@ -95,9 +89,7 @@ const updateCurrentUser = (req, res, next) => {
     { new: true, runValidators: true, context: "query" }
   )
     .orFail(new NotFoundError("User not found"))
-    .then((user) => {
-      return res.status(STATUS_OK).send({ data: user });
-    })
+    .then((user) => res.status(STATUS_OK).send({ data: user }))
 
     .catch(next);
 };

@@ -14,6 +14,9 @@ const {
   validateItemId,
 } = require("../middlewares/validation");
 
+// Get items
+router.get("/", getItems);
+
 // Create item
 router.post("/", auth, validateCardBody, createItem);
 

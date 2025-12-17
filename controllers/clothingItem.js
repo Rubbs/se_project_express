@@ -6,7 +6,7 @@ const ForbiddenError = require("../errors/ForbiddenError");
 
 const { STATUS_OK, STATUS_CREATED } = require("../utils/constants");
 
-//Create Item
+// Create Item
 const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
 
@@ -17,7 +17,6 @@ const createItem = (req, res, next) => {
     owner: req.user._id,
   })
     .then((item) => {
-
       // Important: send raw item
       res.status(STATUS_CREATED).send(item);
     })
@@ -53,7 +52,6 @@ const deleteItem = (req, res, next) => {
           "You do not have permission to delete this item"
         );
       }
-
 
       return ClothingItem.findByIdAndDelete(itemId);
     })

@@ -3,14 +3,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-// Named validator functions
-function isURLValidator(value) {
-  return validator.isURL(value, {
-    protocols: ["http", "https"],
-    require_protocol: true,
-  });
-}
-
+// Email validator function
 function isEmailValidator(v) {
   return validator.isEmail(v);
 }
